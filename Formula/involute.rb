@@ -9,7 +9,7 @@ class Involute < Formula
   depends_on "mlx"
 
   depends_on :macos
-  conflicts_with "involute-sycl", because: "this version is optimized for Apple Silicon"
+  #conflicts_with "involute-sycl", because: "this version is optimized for Apple Silicon"
 
   def install
     # Ensure we are on Apple Silicon as per README requirements
