@@ -2,7 +2,7 @@ class Involute < Formula
   desc "Hardware-accelerated CBO library for manifold-constrained optimization"
   homepage "https://github.com/c0rmac/involute"
   url "https://github.com/c0rmac/involute/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "deced2da64963487e318a33752e7debb901d04cd60ffab06c3bdd44999eaeebc" # Generate this after pushing your tag
+  sha256 "17cc913282c1c8f993f4e00c7049dc736e5fcf660d7c396b2fcc8ebf80b4096a" # Generate this after pushing your tag
   license "MIT"
 
   depends_on "cmake" => :build
