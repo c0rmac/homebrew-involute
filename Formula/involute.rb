@@ -1,8 +1,8 @@
 class Involute < Formula
   desc "Hardware-accelerated CBO library for manifold-constrained optimization"
   homepage "https://github.com/c0rmac/involute"
-  url "https://github.com/c0rmac/involute/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "17cc913282c1c8f993f4e00c7049dc736e5fcf660d7c396b2fcc8ebf80b4096a"
+  url "https://github.com/c0rmac/involute/archive/refs/tags/v1.0.0.tar.gz"
+  sha256 "8fe6bd283a61b320c92db2eadb45faa645bf5debaedc3fcff9d6ac50932aeeb5"
   license "MIT"
 
   # ---------------------------------------------------------------------------
