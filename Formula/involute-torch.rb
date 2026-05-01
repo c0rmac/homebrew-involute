@@ -1,8 +1,8 @@
 class InvoluteTorch < Formula
   desc "Hardware-accelerated CBO library for manifold-constrained optimization — LibTorch backend"
   homepage "https://github.com/c0rmac/involute"
-  url "https://github.com/c0rmac/involute/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "8fe6bd283a61b320c92db2eadb45faa645bf5debaedc3fcff9d6ac50932aeeb5"
+  url "https://github.com/c0rmac/involute/archive/refs/tags/v1.0.1.tar.gz"
+  sha256 "bfb102acbb07731482d3c354d11ae69fd6d0901869d5c5da4f8f298a7ad6f6a6"
   license "MIT"
 
   depends_on "cmake" => :build
