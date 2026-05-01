@@ -8,34 +8,34 @@ class Involute < Formula
   # ---------------------------------------------------------------------------
   # Backend options — exactly one must be specified.
   #
-  # Involute delegates all tensor operations to isomorphism. You must choose
-  # the backend that matches your hardware and toolchain.
+  # isomorphism must be installed separately with the matching backend flag
+  # before installing involute:
   #
-  # Usage:
-  #   brew install c0rmac/homebrew-involute/involute --with-mlx   # Apple Silicon / Metal
-  #   brew install c0rmac/homebrew-involute/involute --with-torch # LibTorch / PyTorch
+  #   brew tap c0rmac/homebrew-isomorphism
+  #   brew install c0rmac/homebrew-isomorphism/isomorphism --with-mlx   # Apple Silicon
+  #   brew install c0rmac/homebrew-isomorphism/isomorphism --with-torch  # LibTorch
+  #
+  # Then install involute with the same backend flag:
+  #   brew install c0rmac/homebrew-involute/involute --with-mlx
+  #   brew install c0rmac/homebrew-involute/involute --with-torch
   # ---------------------------------------------------------------------------
   option "with-mlx",   "Use the Apple MLX (Metal) backend (Apple Silicon)"
   option "with-torch", "Use the LibTorch backend"
 
   # ---------------------------------------------------------------------------
-  # Hard build-time dependencies (always required)
+  # Dependencies
   # ---------------------------------------------------------------------------
   depends_on "cmake" => :build
   depends_on "libomp"   # required by riemannian-gaussian-sampler's OpenMP threading
+
+  depends_on "c0rmac/homebrew-isomorphism/isomorphism"
+  depends_on "c0rmac/homebrew-riemannian-gaussian-sampler/riemannian-gaussian-sampler"
 
   # Backend runtime libraries
   depends_on "mlx"     if build.with?("mlx")
   depends_on "pytorch" if build.with?("torch")
   depends_on "abseil"  if build.with?("torch")  # transitive dep of LibTorch protobuf
 
-  # ---------------------------------------------------------------------------
-  # Install
-  #
-  # isomorphism and riemannian-gaussian-sampler are installed here rather than
-  # declared as `depends_on` entries so that we can forward the chosen backend
-  # option to isomorphism. Homebrew cannot propagate options across dependencies.
-  # ---------------------------------------------------------------------------
   def install
     use_mlx   = build.with?("mlx")
     use_torch = build.with?("torch")
@@ -48,34 +48,13 @@ class Involute < Formula
       odie "Only one backend may be selected at a time: --with-mlx or --with-torch"
     end
 
-    # Ensure dependency taps are registered before resolving formulae.
-    %w[c0rmac/homebrew-isomorphism c0rmac/homebrew-riemannian-gaussian-sampler].each do |tap|
-      user, repo = tap.split("/")
-      Tap.fetch(user, repo).install unless Tap.fetch(user, repo).installed?
-    end
-
-    # Install isomorphism with the selected backend. brew install is idempotent;
-    # if it is already present with the correct backend this is a no-op.
-    iso_args = ["brew", "install", "c0rmac/homebrew-isomorphism/isomorphism"]
-    iso_args << "--with-mlx"   if use_mlx
-    iso_args << "--with-torch" if use_torch
-    system(*iso_args)
-
-    # Install riemannian-gaussian-sampler (depends on isomorphism internally).
-    system "brew", "install",
-           "c0rmac/homebrew-riemannian-gaussian-sampler/riemannian-gaussian-sampler"
-
-    # Resolve installed prefixes now that dependencies are guaranteed to exist.
     iso_prefix     = Formula["c0rmac/homebrew-isomorphism/isomorphism"].opt_prefix
     sampler_prefix = Formula["c0rmac/homebrew-riemannian-gaussian-sampler/riemannian-gaussian-sampler"].opt_prefix
-
-    cmake_prefix = "#{iso_prefix};#{sampler_prefix};#{HOMEBREW_PREFIX}"
 
     args = std_cmake_args + %W[
       -DCMAKE_BUILD_TYPE=Release
       -DBUILD_SHARED_LIBS=ON
       -DBUILD_TESTING=OFF
-      -DCMAKE_PREFIX_PATH=#{cmake_prefix}
     ]
 
     if use_torch
