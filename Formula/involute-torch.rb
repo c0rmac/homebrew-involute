@@ -36,6 +36,7 @@ class InvoluteTorch < Formula
     iso_prefix     = Formula["c0rmac/homebrew-isomorphism/isomorphism-torch"].opt_prefix
     sampler_prefix = Formula["c0rmac/homebrew-riemannian-gaussian-sampler/riemannian-gaussian-sampler-torch"].opt_prefix
     torch          = Formula["pytorch"].opt_prefix
+    libomp         = Formula["libomp"].opt_prefix
 
     (testpath/"test.cpp").write <<~EOS
       #include <involute/solvers/isotropic/so_isotropic_solver_cmaes.hpp>
@@ -71,10 +72,11 @@ class InvoluteTorch < Formula
            "-I#{sampler_prefix}/include",
            "-I#{torch}/include",
            "-I#{torch}/include/torch/csrc/api/include",
-           "-L#{lib}",            "-linvolute",
-           "-L#{iso_prefix}/lib", "-lisomorphism_torch",
-           "-L#{sampler_prefix}/lib",
-           "-L#{torch}/lib", "-ltorch", "-ltorch_cpu", "-lc10",
+           "-L#{lib}",                "-linvolute",
+           "-L#{sampler_prefix}/lib", "-lsampler",
+           "-L#{iso_prefix}/lib",     "-lisomorphism_torch",
+           "-L#{torch}/lib",          "-ltorch", "-ltorch_cpu", "-lc10",
+           "-L#{libomp}/lib",         "-lomp",
            "-o", "test"
     system "./test"
   end

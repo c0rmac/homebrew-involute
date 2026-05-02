@@ -32,6 +32,8 @@ class InvoluteMlx < Formula
   test do
     iso_prefix     = Formula["c0rmac/homebrew-isomorphism/isomorphism-mlx"].opt_prefix
     sampler_prefix = Formula["c0rmac/homebrew-riemannian-gaussian-sampler/riemannian-gaussian-sampler-mlx"].opt_prefix
+    mlx_prefix     = Formula["mlx"].opt_prefix
+    libomp         = Formula["libomp"].opt_prefix
 
     (testpath/"test.cpp").write <<~EOS
       #include <involute/solvers/isotropic/so_isotropic_solver_cmaes.hpp>
@@ -65,9 +67,11 @@ class InvoluteMlx < Formula
            "-I#{include}",
            "-I#{iso_prefix}/include",
            "-I#{sampler_prefix}/include",
-           "-L#{lib}",            "-linvolute",
-           "-L#{iso_prefix}/lib", "-lisomorphism_mlx",
-           "-L#{sampler_prefix}/lib",
+           "-L#{lib}",                "-linvolute",
+           "-L#{sampler_prefix}/lib", "-lsampler",
+           "-L#{iso_prefix}/lib",     "-lisomorphism_mlx",
+           "-L#{mlx_prefix}/lib",     "-lmlx",
+           "-L#{libomp}/lib",         "-lomp",
            "-o", "test"
     system "./test"
   end

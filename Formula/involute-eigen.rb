@@ -33,6 +33,7 @@ class InvoluteEigen < Formula
     iso_prefix     = Formula["c0rmac/homebrew-isomorphism/isomorphism-eigen"].opt_prefix
     sampler_prefix = Formula["c0rmac/homebrew-riemannian-gaussian-sampler/riemannian-gaussian-sampler-eigen"].opt_prefix
     eigen          = Formula["eigen"].opt_include
+    libomp         = Formula["libomp"].opt_prefix
 
     (testpath/"test.cpp").write <<~EOS
       #include <involute/solvers/isotropic/so_isotropic_solver_cmaes.hpp>
@@ -67,9 +68,10 @@ class InvoluteEigen < Formula
            "-I#{iso_prefix}/include",
            "-I#{sampler_prefix}/include",
            "-I#{eigen}/eigen3",
-           "-L#{lib}",            "-linvolute",
-           "-L#{iso_prefix}/lib", "-lisomorphism_eigen",
-           "-L#{sampler_prefix}/lib",
+           "-L#{lib}",                "-linvolute",
+           "-L#{sampler_prefix}/lib", "-lsampler",
+           "-L#{iso_prefix}/lib",     "-lisomorphism_eigen",
+           "-L#{libomp}/lib",         "-lomp",
            "-o", "test"
     system "./test"
   end
